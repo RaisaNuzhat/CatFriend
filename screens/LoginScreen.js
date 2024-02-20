@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 16,
-    color: '#fff',
+    color: '#38598b',
   },
   formContainer: {
     backgroundColor: '#e7eaf6', 

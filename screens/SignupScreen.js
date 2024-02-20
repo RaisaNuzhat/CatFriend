@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'; 
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Image } from 'react-native';
 import { gsap, Back } from 'gsap-rn';
+import { Timestamp, addDoc, collection, doc, updateDoc,query, where,getDocs } from 'firebase/firestore/lite';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { FontAwesome } from '@expo/vector-icons';
@@ -52,11 +53,12 @@ const SignUpScreen = ({ navigation }) => {
             placeholder="Enter Your User Name"
             onChangeText={(text) => setFirstName(text)}
           />
-          <TextInput
+             
+         <TextInput
             style={styles.input}
             placeholder="Enter Your Birthdate"
             onChangeText={(text) => setBirthdate(text)}
-          />
+          /> 
           <TextInput
             style={styles.input}
             placeholder="Enter your Profile Picture"
@@ -103,8 +105,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    marginBottom: 16,
-    color: '#fff',
+    marginBottom: 5,
+    color:'#38598b',
   },
   formContainer: {
     backgroundColor: '#e7eaf6',
@@ -119,14 +121,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 8,
     width: '80%',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   logo: {
     alignSelf: 'center',
-    height: 150,
-    width: 150,
-    marginBottom: 20,
-    marginTop: 30
+    height: 120,
+    width: 120,
+    marginBottom: 8,
+    marginTop: 15
   },
   input: {
     height: 60,
