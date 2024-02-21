@@ -101,9 +101,9 @@ export default function SignUpScreen({ navigation }) {
     if (email.length === 0 || password.length === 0 || userName.length === 0) {
       setErrorMessage("Please provide all the necessary information");
     } else if (email.length > 0 && password.length > 0 && confirmPassword.length > 0 && userName.length > 0) {
-      if (password === confirmPassword && userNameErrorMessage[1] === 'green') registerWithEmail();
+      if (password === confirmPassword ) registerWithEmail();
       else if (password !== confirmPassword) setErrorMessage("Passwords do not match");
-      else setErrorMessage("Please provide a valid username");
+      //else setErrorMessage("Please provide a valid username");
     } else {
       setErrorMessage("Something is missing!");
     }

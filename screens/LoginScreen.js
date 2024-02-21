@@ -144,7 +144,7 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Modal, ActivityIndicator, Pressable } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Modal, ActivityIndicator, Pressable, ImageBackground } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -171,7 +171,7 @@ export default function LoginScreen({ navigation }) {
             .then((userCredential) => {
                 const user = userCredential.user;
                 intermediateSignUp(user);
-                navigation.replace('Home'); // Navigate to the home screen
+                navigation.replace('BlogPage'); // Navigate to the home screen
             })
             .catch((e) => {
                 if (e.code === 'auth/invalid-credential') setErrorMessage("Wrong Password");
@@ -224,99 +224,123 @@ export default function LoginScreen({ navigation }) {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-    <Image
-        style={styles.logo}
-        source={require('../assets/logo.png')}
-    />
-    <TextInput
-        style={styles.input}
-        placeholder='E-mail'
-        placeholderTextColor="#aaaaaa"
-        onChangeText={(text) => { setEmail(text); setErrorMessage(''); }}
-        value={email}
-        autoCapitalize="none"
-    />
-    <View style={styles.passwordContainer}>
-        <TextInput
-            style={styles.passwordInput}
-            placeholderTextColor="#aaaaaa"
-            secureTextEntry={!showPassword}
-            placeholder='Password'
-            onChangeText={(text) => { setPassword(text); setErrorMessage('') }}
-            value={password}
-            autoCapitalize="none"
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-            <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#aaaaaa" />
-        </TouchableOpacity>
-    </View>
-    <View style={styles.checkboxContainer}>
-        <Checkbox
-            style={styles.checkbox}
-            value={isRememberMeChecked}
-            onValueChange={() => setIsRememberMeChecked(!isRememberMeChecked)}
-            color={isRememberMeChecked ? '#e80909' : undefined}
-        />
-        <Text style={styles.checkboxLabel}>Keep me logged in</Text>
-    </View>
-    {errorMessage.length > 0 && <Text style={styles.errorMessage}>*{errorMessage}*</Text>}
-    <TouchableOpacity
-        disabled={password.length == 0 || email.length == 0}
-        style={styles.button}
-        onPress={signIn}>
-        <Text style={styles.buttonTitle}>
-            {loading ? <ActivityIndicator size={18} color={"#fff"} /> : "Log in"}
-        </Text>
-    </TouchableOpacity>
-    <View style={styles.footerView}>
-        <Text style={styles.footerText}>Don't have an account? <Text onPress={() => {
-            setEmail('');
-            setPassword('');
-            setErrorMessage('')
-            navigation.navigate('SignUp')
-        }} style={styles.footerLink}>Sign up</Text></Text>
-    </View>
-    <Modal
-        visible={loggedInStatus}
-        animationType="fade"
-        transparent={true}
-    >
-        <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-                <Ionicons name="md-person" size={64} color="#e80505" />
-                <Text style={styles.welcomeText}>
-                    Welcome, <Text style={styles.usernameText}>{welcomeUserName}</Text>
-                </Text>
-                <TouchableOpacity style={styles.cancelButton}
-                    onPress={() => {
-                        setLoggedInStatus(false);
-                        navigation.replace('Home');
-                    }}
+        <ImageBackground source={require('../assets/bg.jpeg')} style={styles.backgroundImage}>
+            <View style={styles.container}>
+                <View style={styles.formContainer}>
+                    <Image
+                        style={styles.logo}
+                        source={require('../assets/logo.png')}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder='E-mail'
+                        placeholderTextColor="#aaaaaa"
+                        onChangeText={(text) => { setEmail(text); setErrorMessage(''); }}
+                        value={email}
+                        autoCapitalize="none"
+                    />
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={styles.passwordInput}
+                            placeholderTextColor="#aaaaaa"
+                            secureTextEntry={!showPassword}
+                            placeholder='Password'
+                            onChangeText={(text) => { setPassword(text); setErrorMessage('') }}
+                            value={password}
+                            autoCapitalize="none"
+                        />
+                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                            <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#aaaaaa" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.checkboxContainer}>
+                        <Checkbox
+                            style={styles.checkbox}
+                            value={isRememberMeChecked}
+                            onValueChange={() => setIsRememberMeChecked(!isRememberMeChecked)}
+                            color={isRememberMeChecked ? '#e80909' : undefined}
+                        />
+                        <Text style={styles.checkboxLabel}>Keep me logged in</Text>
+                    </View>
+                    {errorMessage.length > 0 && <Text style={styles.errorMessage}>*{errorMessage}*</Text>}
+                    <TouchableOpacity
+                        disabled={password.length == 0 || email.length == 0}
+                        style={styles.button}
+                        onPress={signIn}>
+                        <Text style={styles.buttonTitle}>
+                            {loading ? <ActivityIndicator size={18} color={"#fff"} /> : "Log in"}
+                        </Text>
+                    </TouchableOpacity>
+                    <View style={styles.footerView}>
+                        <Text style={styles.footerText}>Don't have an account? <Text onPress={() => {
+                            setEmail('');
+                            setPassword('');
+                            setErrorMessage('')
+                            navigation.navigate('SignUp')
+                        }} style={styles.footerLink}>Sign up</Text></Text>
+                    </View>
+                </View>
+                <Modal
+                    visible={loggedInStatus}
+                    animationType="fade"
+                    transparent={true}
                 >
-                    <Text style={styles.cancelButtonText}>Enter the Area 51</Text>
-                </TouchableOpacity>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Ionicons name="md-person" size={64} color="#e80505" />
+                            <Text style={styles.welcomeText}>
+                                Welcome, <Text style={styles.usernameText}>{welcomeUserName}</Text>
+                            </Text>
+                            <TouchableOpacity style={styles.cancelButton}
+                                onPress={() => {
+                                    setLoggedInStatus(false);
+                                    navigation.replace('BlogPage');
+                                }}
+                            >
+                                <Text style={styles.cancelButtonText}>Enter the Area 51</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
             </View>
-        </View>
-    </Modal>
-</ScrollView>
-
+        </ImageBackground>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
+    backgroundImage: {
         flex: 1,
-        alignItems: 'center',
+        resizeMode: 'cover',
         justifyContent: 'center',
-        padding: 20,
-        backgroundColor: '#ffffff',
     },
-    logo: {
-        width: 200,
-        height: 150,
-        marginBottom: 20,
-    },
+    container: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 10,
+        },
+        formContainer: {
+            backgroundColor: '#e7eaf6', 
+            borderRadius: 12,
+            padding: 20,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+            elevation: 8,
+            width: '80%',
+            marginBottom: 16,
+          },
+          logo: {
+            alignSelf: 'center',
+            height: 120,
+            width: 120,
+            marginBottom: 8,
+            marginTop: 15
+          },
     input: {
         height: 40,
         width: '100%',
@@ -347,10 +371,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     button: {
-        backgroundColor: '#e80505',
-        paddingVertical: 12,
-        borderRadius: 5,
-        width: '100%',
+      backgroundColor: '#38598b',
+      padding: 15,
+      borderRadius: 12,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     buttonTitle: {
         color: 'white',
@@ -398,4 +424,19 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
     },
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+        width: '100%',
+    },
+    checkbox: {
+        alignSelf: 'center',
+    },
+    checkboxLabel: {
+        marginLeft: 8,
+    },
 });
+
+
+    
