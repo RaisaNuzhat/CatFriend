@@ -1,4 +1,3 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore/lite";
@@ -12,10 +11,10 @@ const firebaseConfig = {
   projectId: "catfriend-b09f1",
   storageBucket: "catfriend-b09f1.appspot.com",
   messagingSenderId: "249116433336",
-  appId: "1:249116433336:web:13657c9922123c9b404d4d"
+  appId: "1:249116433336:web:13657c9922123c9b404d4d",
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app)
+export const db = getFirestore(app);
 export const auth = getAuth();

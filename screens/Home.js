@@ -20,7 +20,7 @@ const Home = ({ navigation }) => {
         </Text>
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>Explore!</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
+    fontWeight:'bold',
     textAlign: 'center',
     fontSize: 18,
   },
