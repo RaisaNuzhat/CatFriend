@@ -175,18 +175,21 @@ export default function SignUpScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
           {birthDateModalStatus && <DateTimePicker
-            testID="dateTimePicker"
-            value={moment(birthDate, 'DD/MM/YYYY').toDate()}
-            mode="date"
-            onChange={(e, date) => {
-              const inputMoment = moment.utc(date).isValid() ?
-                moment.utc(date) : moment.utc();
-              const formattedDate = inputMoment.format('DD/MM/YYYY');
-              setBirthDate(formattedDate)
-              // console.log(formattedDate)
-              setBirthDateModalStatus(false)
-            }}
-          />}
+          testID="dateTimePicker"
+          value={moment(birthDate, 'DD/MM/YYYY').toDate()}
+          mode="date"
+
+          onChange={(e, date) => {
+            const day = date.getDate();
+            const month = date.getMonth();
+            const year = date.getFullYear();
+
+            const formattedDate = `${day.toString().padStart(2, '0')}/${(month + 1).toString().padStart(2, '0')}/${year.toString()}`;
+
+            setBirthDate(formattedDate)
+            setBirthDateModalStatus(false);
+          }}
+        />}
           {errorMessage.length > 0 && <Text style={{ color: 'red', textAlign: 'center' }}>*{errorMessage}*</Text>}
           <TouchableOpacity
             disabled={password.length == 0 || email.length == 0}

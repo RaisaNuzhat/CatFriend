@@ -171,7 +171,7 @@ export default function LoginScreen({ navigation }) {
             .then((userCredential) => {
                 const user = userCredential.user;
                 intermediateSignUp(user);
-                navigation.replace('BlogPage'); // Navigate to the home screen
+                navigation.replace('NavBar'); // Navigate to the home screen
             })
             .catch((e) => {
                 if (e.code === 'auth/invalid-credential') setErrorMessage("Wrong Password");
@@ -344,18 +344,20 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         width: '100%',
-        borderColor: 'gray',
-        borderWidth: 1,
+        borderColor: '#38598b',
+        borderRadius:16,
         marginBottom: 20,
         paddingHorizontal: 10,
+        borderWidth: 2,
     },
     passwordContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: 'gray',
+        borderWidth: 2,
+        borderColor: '#38598b',
         marginBottom: 20,
         width: '100%',
+        borderRadius:16,
     },
     passwordInput: {
         flex: 1,
@@ -364,6 +366,7 @@ const styles = StyleSheet.create({
     },
     eyeIcon: {
         padding: 10,
+        color:'#38598b',
     },
     errorMessage: {
         color: 'red',
@@ -381,6 +384,7 @@ const styles = StyleSheet.create({
     buttonTitle: {
         color: 'white',
         textAlign: 'center',
+        fontWeight: 'bold',
     },
     footerView: {
         flexDirection: 'row',
@@ -388,6 +392,7 @@ const styles = StyleSheet.create({
     },
     footerText: {
         fontSize: 16,
+        color: '#38598b',
     },
     footerLink: {
         fontSize: 16,
@@ -429,6 +434,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
         width: '100%',
+        borderColor: '#38598b',
     },
     checkbox: {
         alignSelf: 'center',
