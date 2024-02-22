@@ -1,7 +1,19 @@
 import React from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
+import { View, Text, Switch, StyleSheet, TouchableOpacity } from 'react-native';
+import { auth } from '../firebase'; // Assuming you have imported auth from firebase
+import { useNavigation } from '@react-navigation/native';
 
 const SettingsScreen = () => {
+  const navigation = useNavigation();
+
+  const handleLogout = () => {
+    auth.signOut().then(() => {
+      navigation.replace('LogIn');
+    }).catch(error => {
+      console.error('Error signing out:', error);
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>General Settings</Text>
@@ -18,10 +30,10 @@ const SettingsScreen = () => {
         <Text style={styles.settingLabel}>Change Password</Text>
         <Text style={styles.settingAction} /* Add functionality to handle password change */>Change</Text>
       </View>
-      <View style={styles.settingItem}>
+      <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
         <Text style={styles.settingLabel}>Logout</Text>
-        <Text style={styles.settingAction} /* Add functionality to handle logout */>Logout</Text>
-      </View>
+        <Text style={styles.settingAction}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 };
