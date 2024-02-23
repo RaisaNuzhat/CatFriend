@@ -1,8 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, ImageBackground } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Dimensions, ImageBackground, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { FontAwesome } from '@expo/vector-icons';
 
 const AboutUs = () => {
+  const [rating, setRating] = useState(0);
+
+  const handleRating = (value) => {
+    // If the same star is clicked again, withdraw the rating
+    const newRating = value === rating ? 0 : value;
+    setRating(newRating);
+  };
+
   return (
     <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -37,6 +46,24 @@ const AboutUs = () => {
           Our head office is located in Chittagong, Bangladesh. It is a vibrant city with rich cultural heritage and scenic beauty.
           Feel free to visit us and learn more about our operations!
         </Text>
+        <Text style={styles.subHeading}>Rate Us</Text>
+        <View style={styles.ratingContainer}>
+          {[1, 2, 3, 4, 5].map((value) => (
+            <TouchableOpacity key={value} onPress={() => handleRating(value)}>
+              <FontAwesome
+                name={value <= rating ? 'star' : 'star-o'}
+                size={30}
+                color={value <= rating ? '#FFD700' : '#ccc'}
+                style={{ marginRight: 10 }}
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
+        <Text style={styles.subHeading}>User's Guide</Text>
+        <WebView
+          style={{ alignSelf: 'stretch', height: 300 }}
+          source={{ uri: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }} // Replace VIDEO_ID with the ID of your YouTube video
+        />
       </ScrollView>
     </ImageBackground>
   );
@@ -74,6 +101,10 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 10,
     overflow: 'hidden',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
   },
 });
 
