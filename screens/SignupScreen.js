@@ -116,7 +116,7 @@ export default function SignUpScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/bg.jpeg')}
+      source={require('../assets/loginsignupbg.jpeg')}
       style={styles.backgroundImage}
     >
       <ScrollView contentContainerStyle={styles.container}>

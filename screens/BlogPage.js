@@ -1,334 +1,220 @@
-// import React, { useState } from 'react';
-// import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, ImageBackground } from 'react-native';
-// import { FontAwesome5 } from '@expo/vector-icons';
-// import { WebView } from 'react-native-webview'; // Import WebView from react-native-webview
-
-// // Sample data for posts
-// const postsData = [
-//   { id: 1, author: 'Raisa Nuzhat', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', likes: 5, dislikes: 2, videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-//   { id: 2, author: 'Ratri Barua', content: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', likes: 10, dislikes: 3, videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-//   // Add more posts as needed
-// ];
-
-// const BlogPage = ({ navigation }) => {
-//   const [posts, setPosts] = useState(postsData);
-//   const [textValue, setTextValue] = useState('');
-//   const [imageUrl, setImageUrl] = useState('');
-//   const [videoUrl, setVideoUrl] = useState('');
-
-//   const handleLike = (postId) => {
-//     setPosts(prevPosts =>
-//       prevPosts.map(post =>
-//         post.id === postId ? { ...post, likes: post.likes + 1 } : post
-//       )
-//     );
-//   };
-
-//   const handleDislike = (postId) => {
-//     setPosts(prevPosts =>
-//       prevPosts.map(post =>
-//         post.id === postId ? { ...post, dislikes: post.dislikes + 1 } : post
-//       )
-//     );
-//   };
-
-//   const handlePost = () => {
-//     const newPost = {
-//       id: posts.length + 1,
-//       author: 'Current User', // Replace with actual user data
-//       content: textValue,
-//       likes: 0,
-//       dislikes: 0,
-//       videoUrl: videoUrl // Add videoUrl property to the new post object
-//     };
-
-//     setPosts(prevPosts => [...prevPosts, newPost]);
-//     setTextValue('');
-//     setVideoUrl(''); // Clear videoUrl after posting
-//   };
-
-//   return (
-//     <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
-//       <View style={styles.container}>
-//         <View style={styles.navbar}>
-//           <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-//             <Text style={styles.navbarText}>Profile</Text>
-//           </TouchableOpacity>
-//         </View>
-//         <ScrollView style={styles.content}>
-//           {/* Add post form */}
-//           <View style={styles.postForm}>
-//             <TextInput
-//               style={styles.textInput}
-//               placeholder="Write something..."
-//               onChangeText={setTextValue}
-//               value={textValue}
-//               multiline={true}
-//             />
-//             <TextInput
-//               style={styles.textInput}
-//               placeholder="Paste image URL here..."
-//               onChangeText={setImageUrl}
-//               value={imageUrl}
-//             />
-//             <TextInput
-//               style={styles.textInput}
-//               placeholder="Paste YouTube video URL here..."
-//               onChangeText={setVideoUrl}
-//               value={videoUrl}
-//             />
-//             <TouchableOpacity style={styles.postButton} onPress={handlePost}>
-//               <Text style={styles.postButtonText}>Post</Text>
-//             </TouchableOpacity>
-//           </View>
-
-//           {/* Display posts */}
-//           {posts.map(post => (
-//             <View key={post.id} style={styles.postContainer}>
-//               <Text style={styles.postAuthor}>{post.author}</Text>
-//               <Text style={styles.postContent}>{post.content}</Text>
-//               <WebView
-//                 style={styles.videoContainer}
-//                 javaScriptEnabled={true}
-//                 domStorageEnabled={true}
-//                 source={{ uri: post.videoUrl }} // Embed YouTube video using WebView
-//               />
-//               <View style={styles.actionsContainer}>
-//                 <TouchableOpacity onPress={() => handleLike(post.id)}>
-//                   <FontAwesome5 name="thumbs-up" size={20} color="green" />
-//                 </TouchableOpacity>
-//                 <TouchableOpacity onPress={() => handleDislike(post.id)}>
-//                   <FontAwesome5 name="thumbs-down" size={20} color="red" />
-//                 </TouchableOpacity>
-//                 <TouchableOpacity onPress={() => { /* Add functionality for commenting */ }}>
-//                   <FontAwesome5 name="comment" size={20} color="blue" />
-//                 </TouchableOpacity>
-//               </View>
-//               <View style={styles.likesContainer}>
-//                 <Text style={styles.likesText}>Likes: {post.likes}</Text>
-//                 <Text style={styles.dislikesText}>Dislikes: {post.dislikes}</Text>
-//               </View>
-//             </View>
-//           ))}
-//         </ScrollView>
-//       </View>
-//     </ImageBackground>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-//   backgroundImage: {
-//     flex: 1,
-//     resizeMode: 'cover',
-//     justifyContent: 'center',
-//   },
-//   navbar: {
-//     marginTop: 30,
-//     backgroundColor: '#38598b',
-//     padding: 20,
-//     alignItems: 'center',
-//   },
-//   navbarText: {
-//     color: 'white',
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//   },
-//   content: {
-//     flex: 1,
-//     padding: 10,
-//   },
-//   postForm: {
-//     marginBottom: 20,
-//     marginTop: 15,
-//   },
-//   textInput: {
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     borderRadius: 10,
-//     padding: 10,
-//     marginBottom: 10,
-//   },
-//   postButton: {
-//     backgroundColor: '#38598b',
-//     paddingVertical: 12,
-//     borderRadius: 5,
-//   },
-//   postButtonText: {
-//     color: '#fff',
-//     textAlign: 'center',
-//   },
-//   postContainer: {
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     borderRadius: 10,
-//     padding: 10,
-//     marginBottom: 10,
-//   },
-//   postAuthor: {
-//     fontWeight: 'bold',
-//     marginBottom: 5,
-//   },
-//   postContent: {
-//     marginBottom: 10,
-//   },
-//   videoContainer: {
-//     height: 200, // Adjust height as needed
-//     marginBottom: 10,
-//   },
-//   actionsContainer: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     marginBottom: 10,
-//   },
-//   likesContainer: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//   },
-//   likesText: {
-//     color: 'green',
-//   },
-//   dislikesText: {
-//     color: 'red',
-//   },
-// });
-
-// export default BlogPage;
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, ImageBackground,FlatList} from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { WebView } from 'react-native-webview'; // Import WebView from react-native-webview
-import { Ionicons } from '@expo/vector-icons';
-import NavBar from './NavBar'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, ImageBackground, Image, Modal } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons'; // Import FontAwesome from @expo/vector-icons for icons
 
-// Sample data for posts
-const postsData = [
-  { id: 1, author: 'Raisa Nuzhat', content: 'Hello guys check out this funny video!', likes: 5, dislikes: 2, videoUrl: 'https://www.youtube.com/watch?v=13QkrOtFeUQ' },
-  { id: 2, author: 'Ratri Barua', content: 'Hello guys check out this funny video!', likes: 10, dislikes: 3, videoUrl: 'https://www.youtube.com/watch?v=13QkrOtFeUQ' },
-  // Add more posts as needed
-];
-
-const BlogPage = ({ navigation }) => {
-  const [posts, setPosts] = useState(postsData);
-  const [textValue, setTextValue] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [videoUrl, setVideoUrl] = useState('');
-
-  const handleLike = (postId) => {
-    setPosts(prevPosts =>
-      prevPosts.map(post =>
-        post.id === postId ? { ...post, likes: post.likes + 1 } : post
-      )
-    );
-  };
-
-  const handleDislike = (postId) => {
-    setPosts(prevPosts =>
-      prevPosts.map(post =>
-        post.id === postId ? { ...post, dislikes: post.dislikes + 1 } : post
-      )
-    );
-  };
+const BlogPage = () => {
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      username: 'User1',
+      dp: 'https://via.placeholder.com/50', // DP stands for display picture
+      caption: 'Beautiful sunset view!',
+      image: 'https://via.placeholder.com/300',
+      likes: 10,
+      comments: ['Amazing!', 'Love it!']
+    },
+    {
+      id: 2,
+      username: 'User2',
+      dp: 'https://via.placeholder.com/50',
+      caption: 'Exploring the wilderness!',
+      image: 'https://via.placeholder.com/300',
+      likes: 20,
+      comments: ['Wow!', 'Incredible!']
+    }
+  ]);
+  const [caption, setCaption] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showPostOptions, setShowPostOptions] = useState(false);
 
   const handlePost = () => {
+    if (!caption || !selectedImage) {
+      alert('Please enter a caption and select an image.');
+      return;
+    }
+
     const newPost = {
       id: posts.length + 1,
-      author: 'Current User', // Replace with actual user data
-      content: textValue,
+      username: 'Current User', // Replace with actual user data
+      dp: 'https://via.placeholder.com/50', // Replace with actual user's display picture
+      caption: caption,
+      image: selectedImage,
       likes: 0,
-      dislikes: 0,
-      videoUrl: videoUrl // Add videoUrl property to the new post object
+      comments: []
     };
 
-    setPosts(prevPosts => [...prevPosts, newPost]);
-    setTextValue('');
-    setVideoUrl(''); // Clear videoUrl after posting
+    setPosts([...posts, newPost]);
+    setCaption('');
+    setSelectedImage(null);
+    setShowPostOptions(false); // Hide post options after posting
+  };
+
+  const handleImageSelect = () => {
+    // Here, you would implement image selection logic using a library like Expo ImagePicker
+    // For simplicity, we'll just set a placeholder image URL
+    setSelectedImage('https://via.placeholder.com/300');
   };
 
   return (
     <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        <ScrollView style={styles.content}>
-          {/* Add post form */}
-          <View style={styles.postForm}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Write something..."
-              onChangeText={setTextValue}
-              value={textValue}
-              multiline={true}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Paste image URL here..."
-              onChangeText={setImageUrl}
-              value={imageUrl}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Paste YouTube video URL here..."
-              onChangeText={setVideoUrl}
-              value={videoUrl}
-            />
-            <TouchableOpacity style={styles.postButton} onPress={handlePost}>
-              <Text style={styles.postButtonText}>Post</Text>
+        <ScrollView style={styles.feed}>
+          <View style={styles.createPostContainer}>
+            <Text style={styles.createPostText}>Create A Post....</Text>
+            <TouchableOpacity style={styles.plusIcon} onPress={() => setShowPostOptions(true)}>
+              <FontAwesome name="plus-square-o" size={30} color="black" />
             </TouchableOpacity>
           </View>
-
-          {/* Display posts */}
           {posts.map(post => (
-            <View key={post.id} style={styles.postContainer}>
-              <Text style={styles.postAuthor}>{post.author}</Text>
-              <Text style={styles.postContent}>{post.content}</Text>
-              <WebView
-                style={styles.videoContainer}
-                javaScriptEnabled={true}
-                domStorageEnabled={true}
-                source={{ uri: post.videoUrl }} // Embed YouTube video using WebView
-              />
+            <View key={post.id} style={styles.post}>
+              <View style={styles.userInfo}>
+                <Image source={{ uri: post.dp }} style={styles.userDp} />
+                <Text style={styles.username}>{post.username}</Text>
+              </View>
+              <Image source={{ uri: post.image }} style={styles.postImage} />
+              <Text style={styles.postCaption}>{post.caption}</Text>
               <View style={styles.actionsContainer}>
-                <TouchableOpacity onPress={() => handleLike(post.id)}>
-                  <FontAwesome5 name="thumbs-up" size={20} color="green" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDislike(post.id)}>
-                  <FontAwesome5 name="thumbs-down" size={20} color="red" />
+                <TouchableOpacity onPress={() => { /* Add functionality for liking */ }}>
+                  <FontAwesome name="heart-o" size={24} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { /* Add functionality for commenting */ }}>
-                  <FontAwesome5 name="comment" size={20} color="blue" />
+                  <FontAwesome name="comment-o" size={24} color="black" />
                 </TouchableOpacity>
               </View>
-              <View style={styles.likesContainer}>
-                <Text style={styles.likesText}>Likes: {post.likes}</Text>
-                <Text style={styles.dislikesText}>Dislikes: {post.dislikes}</Text>
+              <Text style={styles.likesText}>Likes: {post.likes}</Text>
+              <View>
+                {post.comments.map((comment, index) => (
+                  <Text key={index} style={styles.commentText}>{comment}</Text>
+                ))}
               </View>
             </View>
           ))}
         </ScrollView>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showPostOptions}
+          onRequestClose={() => setShowPostOptions(false)}
+        >
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <TouchableOpacity style={styles.closeButton} onPress={() => setShowPostOptions(false)}>
+                <FontAwesome name="close" size={24} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.selectImageButton} onPress={handleImageSelect}>
+                <Text style={styles.selectImageText}>Select Image</Text>
+              </TouchableOpacity>
+              {selectedImage && (
+                <View style={styles.imagePreview}>
+                  <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
+                  <TextInput
+                    style={styles.captionInput}
+                    placeholder="Write a caption..."
+                    value={caption}
+                    onChangeText={setCaption}
+                  />
+                  <TouchableOpacity style={styles.postButton} onPress={handlePost}>
+                    <Text style={styles.postButtonText}>Post</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
+        </Modal>
       </View>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
-    justifyContent: 'center',
   },
-  content: {
+  container: {
     flex: 1,
     padding: 10,
   },
-  postForm: {
-    marginBottom: 20,
-    marginTop: 15,
+  feed: {
+    flex: 1,
   },
-  textInput: {
+  createPostContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  createPostText: {
+    fontSize: 24,
+    fontWeight: '400',
+    color: 'grey',
+  },
+  post: {
+    marginBottom: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  postImage: {
+    width: '100%',
+    height: 300,
+  },
+  postCaption: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingBottom: 5,
+  },
+  likesText: {
+    paddingHorizontal: 10,
+    paddingBottom: 5,
+  },
+  commentText: {
+    paddingHorizontal: 10,
+    paddingBottom: 5,
+    fontStyle: 'italic',
+  },
+  plusIcon: {
+    marginRight: 10,
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    width: '80%',
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+  },
+  selectImageButton: {
+    backgroundColor: '#38598b',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  selectImageText: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  selectedImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  captionInput: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
@@ -338,44 +224,22 @@ const styles = StyleSheet.create({
   postButton: {
     backgroundColor: '#38598b',
     paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 5,
   },
   postButtonText: {
     color: '#fff',
     textAlign: 'center',
   },
-  postContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+  userDp: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 10,
   },
-  postAuthor: {
+  username: {
     fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  postContent: {
-    marginBottom: 10,
-  },
-  videoContainer: {
-    height: 200, // Adjust height as needed
-    marginBottom: 10,
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  likesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  likesText: {
-    color: 'green',
-  },
-  dislikesText: {
-    color: 'red',
+    fontSize: 16,
   },
 });
 

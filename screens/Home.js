@@ -1,8 +1,15 @@
-// HomePage.js
-import React from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, Image } from 'react-native';
+import { gsap } from 'gsap-rn';
 
 const Home = ({ navigation }) => {
+  const viewRef = useRef(null);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    gsap.to(view, { duration: 1, transform: { rotate: 360, scale: 1 } });
+  }, [])
+
   const handleLogin = () => {
     navigation.navigate('LogIn');
   };
@@ -13,6 +20,11 @@ const Home = ({ navigation }) => {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
+        <Image
+          ref={viewRef}
+          style={styles.logo}
+          source={require('../assets/logo.png')}
+        />
         <Text style={styles.title}>Welcome to Catfriend!</Text>
 
         <Text style={styles.description}>
@@ -59,9 +71,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontWeight:'bold',
+    fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 18,
+  },
+  logo:{
+    width: 200,
+    height: 200,
+    marginBottom: 20,
   },
 });
 

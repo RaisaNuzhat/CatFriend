@@ -224,7 +224,7 @@ export default function LoginScreen({ navigation }) {
     };
 
     return (
-        <ImageBackground source={require('../assets/bg.jpeg')} style={styles.backgroundImage}>
+        <ImageBackground source={require('../assets/loginsignupbg.jpeg')} style={styles.backgroundImage}>
             <View style={styles.container}>
                 <View style={styles.formContainer}>
                     <Image
