@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet, TouchableOpacity, ImageBackground, TextInput, Button, Modal, FlatList } from 'react-native';
+import { View, Text, Switch, StyleSheet, TouchableOpacity, ImageBackground, TextInput, Button, Modal, FlatList, ScrollView, Alert } from 'react-native';
 import { auth } from '../firebase'; // Assuming you have imported auth from firebase
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Import Icon from the library
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
@@ -13,8 +14,8 @@ const SettingsScreen = () => {
     { label: 'Feature Requests', value: 'features' },
   ]);
   const [feedbackValues, setFeedbackValues] = useState({});
-  const [selectedOption, setSelectedOption] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const bugOptions = ['Bug', 'Issue', 'Crash', 'Other'];
 
   const handleLogout = () => {
     auth.signOut().then(() => {
@@ -25,13 +26,22 @@ const SettingsScreen = () => {
   };
 
   const handleEmailSubmit = () => {
-    // Perform validation or checks if needed
-    setShowFeedbackForm(true);
+    // Simple email validation
+    if (!validateEmail(userEmail)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+    } else {
+      setShowFeedbackForm(true);
+    }
   };
 
   const handleFeedbackSubmit = () => {
     // Handle feedback submission
     console.log('Feedback submitted:', feedbackValues);
+    // Show success alert
+    Alert.alert('Success', 'Feedback submitted successfully.');
+    // Reset form state
+    setFeedbackValues({});
+    setShowFeedbackForm(false);
   };
 
   const handleInputChange = (fieldName, text) => {
@@ -39,7 +49,7 @@ const SettingsScreen = () => {
   };
 
   const handleOptionSelect = (value) => {
-    setSelectedOption(value);
+    setFeedbackValues({ ...feedbackValues, bugs: value }); // Update feedback value with selected option
     setModalVisible(false);
   };
 
@@ -47,76 +57,99 @@ const SettingsScreen = () => {
     return feedbackFields.map((field, index) => (
       <View key={index}>
         <Text style={styles.label}>{field.label}</Text>
-        <TouchableOpacity style={styles.input} onPress={() => setModalVisible(true)}>
-          <Text>{feedbackValues[field.value] || 'Select an option'}</Text>
-        </TouchableOpacity>
+        {field.value !== 'bugs' ? (
+          <TextInput
+            style={styles.input}
+            placeholder={`Enter ${field.label}`}
+            onChangeText={(text) => handleInputChange(field.value, text)}
+            value={feedbackValues[field.value] || ''}
+          />
+        ) : (
+          <TouchableOpacity style={styles.input} onPress={() => setModalVisible(true)}>
+            <View style={styles.dropdownContainer}>
+              <Text style={styles.dropdownText}>{feedbackValues[field.value] || 'Select an option'}</Text>
+              <Icon name="angle-down" size={20} color="#000" style={styles.dropdownIcon} />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
     ));
   };
 
+  const validateEmail = (email) => {
+    // Very basic email validation
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   return (
     <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <Text style={styles.sectionTitle}>General Settings</Text>
-        <View style={styles.settingItem}>
-          <Text style={styles.settingLabel}>Notifications</Text>
-          <Switch /* Add functionality to handle notifications */ />
-        </View>
-        <Text style={styles.sectionTitle}>Account Settings</Text>
-        <View style={styles.settingItem}>
-          <Text style={styles.settingLabel}>Change Password</Text>
-          <Text style={styles.settingAction} /* Add functionality to handle password change */>Change</Text>
-        </View>
-        <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
-          <Text style={styles.settingLabel}>Logout</Text>
-          <Text style={styles.settingAction}>Logout</Text>
-        </TouchableOpacity>
-        {!showFeedbackForm ? (
-          <View>
-            <Text style={styles.sectionTitle}>Provide Email for Feedback</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your email"
-              onChangeText={setUserEmail}
-              value={userEmail}
-            />
-            <Button title="Submit Email" onPress={handleEmailSubmit} />
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.container}>
+          <Text style={styles.sectionTitle}>General Settings</Text>
+          <View style={styles.settingItem}>
+            <Text style={styles.settingLabel}>Notifications</Text>
+            <Switch /* Add functionality to handle notifications */ />
           </View>
-        ) : (
-          <View>
-            <Text style={styles.sectionTitle}>Feedback Form</Text>
-            {renderFeedbackFields()}
-            <Button title="Submit Feedback" onPress={handleFeedbackSubmit} />
+          <Text style={styles.sectionTitle}>Account Settings</Text>
+          <View style={styles.settingItem}>
+            <Text style={styles.settingLabel}>Change Password</Text>
+            <Text style={styles.settingAction} /* Add functionality to handle password change */>Change</Text>
           </View>
-        )}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(false);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <FlatList
-                data={feedbackFields}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity style={styles.modalOption} onPress={() => handleOptionSelect(item.value)}>
-                    <Text>{item.label}</Text>
-                  </TouchableOpacity>
-                )}
+          <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
+            <Text style={styles.settingLabel}>Logout</Text>
+            <Text style={styles.settingAction}>Logout</Text>
+          </TouchableOpacity>
+          {!showFeedbackForm ? (
+            <View>
+              <Text style={styles.sectionTitle}>Provide Email for Feedback</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                onChangeText={setUserEmail}
+                value={userEmail}
               />
+              <Button title="Submit Email" onPress={handleEmailSubmit} />
             </View>
-          </View>
-        </Modal>
-      </View>
+          ) : (
+            <View>
+              <Text style={styles.sectionTitle}>Feedback Form</Text>
+              {renderFeedbackFields()}
+              <Button title="Submit Feedback" onPress={handleFeedbackSubmit} />
+            </View>
+          )}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(false);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <FlatList
+                  data={bugOptions}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity style={styles.modalOption} onPress={() => handleOptionSelect(item)}>
+                      <Text style={styles.optionText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     padding: 20,
@@ -162,11 +195,9 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
-    margin: 20,
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 35,
-    alignItems: 'center',
+    padding: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -177,8 +208,25 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalOption: {
-    marginBottom: 15,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
+  optionText: {
+    fontSize: 16,
+  },
+  dropdownContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  dropdownText: {
+    fontSize: 16,
+  },
+  dropdownIcon: {
+    marginLeft: 10,
+  },
+  
 });
 
 export default SettingsScreen;
