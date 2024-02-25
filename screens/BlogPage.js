@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
   },
   post: {
     marginBottom: 20,
+    marginTop:20,
     borderRadius: 10,
     overflow: 'hidden',
   },
@@ -160,11 +161,14 @@ const styles = StyleSheet.create({
   },
   postCaption: {
     fontSize: 16,
+
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
   actionsContainer: {
     flexDirection: 'row',
+    gap:20,
+    fontSize:20,
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingBottom: 5,
@@ -172,18 +176,21 @@ const styles = StyleSheet.create({
   likesText: {
     paddingHorizontal: 10,
     paddingBottom: 5,
+
   },
   commentText: {
     paddingHorizontal: 10,
     paddingBottom: 5,
     fontStyle: 'italic',
+    fontSize:14,
   },
   plusIcon: {
     marginRight: 10,
+  
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'grey',
     justifyContent: 'center',
     alignItems: 'center',
   },

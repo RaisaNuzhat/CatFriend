@@ -1,148 +1,3 @@
-
-// //LoginScreen.js
-// import React, { useState } from 'react';
-// import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
-// import { signInWithEmailAndPassword } from 'firebase/auth';
-// import { auth } from '../firebase';
-
-// const LoginScreen = ({ navigation }) => {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [errorMessage, setErrorMessage] = useState('');
-
-//   const handleLogin = () => {
-//     auth()
-//       .signInWithEmailAndPassword(email, password)
-//       .then(() => {
-//         console.log('User logged in successfully!');
-//       })
-//       .catch(error => {
-//         if (error.code === 'auth/invalid-email') {
-//           setErrorMessage('Invalid email address format.');
-//         } else if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-//           setErrorMessage('Invalid email address or password.');
-//         } else {
-//           setErrorMessage(error.message);
-//         }
-//         console.error(error);
-//       });
-//   };
-
-//   return (
-//     <ImageBackground
-//       source={require('../assets/bg.jpeg')} 
-//       style={styles.backgroundImage}
-//     >
-//       <View style={styles.container}>
-//         <Text style={styles.title}>Login</Text>
-
-//         <View style={styles.formContainer}>
-//           <TextInput
-//             style={styles.input}
-//             placeholder="Email"
-//             onChangeText={(text) => setEmail(text)}
-//             value={email}
-//           />
-
-//           <TextInput
-//             style={styles.input}
-//             placeholder="Password"
-//             secureTextEntry
-//             onChangeText={(text) => setPassword(text)}
-//             value={password}
-//           />
-
-//           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-//             <Text style={styles.buttonText}>Login</Text>
-//           </TouchableOpacity>
-//           {errorMessage.length > 0 && <Text style={styles.errorMessage}>{errorMessage}</Text>}
-//         </View>
-
-//         <View style={styles.signupContainer}>
-//           <Text style={styles.signupText}>Don't have an account? </Text>
-//           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-//             <Text style={styles.signupLink}>Sign up</Text>
-//           </TouchableOpacity>
-//         </View>
-//       </View>
-//     </ImageBackground>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   backgroundImage: {
-//     flex: 1,
-//     resizeMode: 'cover',
-//   },
-//   errorMessage: {
-//     color: 'red',
-//     marginBottom: 10,
-//     textAlign: 'center',
-//   },
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 10,
-//   },
-//   title: {
-//     fontSize: 24,
-//     marginBottom: 16,
-//     color: '#38598b',
-//     fontWeight: 'bold',
-//   },
-//   formContainer: {
-//     backgroundColor: '#e7eaf6', 
-//     borderRadius: 12,
-//     padding: 20,
-//     shadowColor: '#000',
-//     shadowOffset: {
-//       width: 0,
-//       height: 4,
-//     },
-//     shadowOpacity: 0.3,
-//     shadowRadius: 4.65,
-//     elevation: 8,
-//     width: '80%',
-//     marginBottom: 16,
-//   },
-//   input: {
-//     height: 60,
-//     borderColor: 'gray',
-//     borderWidth: 1,
-//     marginBottom: 16,
-//     paddingLeft: 8,
-//     backgroundColor: 'white',
-//     borderRadius: 12,
-//   },
-//   loginButton: {
-//     backgroundColor: '#38598b',
-//     padding: 10,
-//     borderRadius: 5,
-//   },
-//   buttonText: {
-//     color: 'white',
-//     textAlign: 'center',
-//   },
-//   signupContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   signupText: {
-//     fontSize: 16,
-//     color: '#38598b',
-//   },
-//   signupLink: {
-//     color: '#FF004D',
-//     textDecorationLine: 'none',
-//     fontSize: 16,
-//   },
-// });
-
-// export default LoginScreen;
-
-
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Modal, ActivityIndicator, Pressable, ImageBackground } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -166,62 +21,59 @@ export default function LoginScreen({ navigation }) {
         try {
             setLoading(true);
             setEmail(email.trim());
-
+    
             await signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
+            .then(async (userCredential) => {
                 const user = userCredential.user;
-                intermediateSignUp(user);
-                navigation.replace('NavBar'); // Navigate to the home screen
+                if (user.emailVerified) {
+                    const usersRef = collection(db, "users");
+                    const q = query(usersRef, where("email", "==", email));
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach((doc) => {
+                        const userData = doc.data();
+                        const { userName, user_id, email, dp_url } = userData;
+                        const loggedUserInfo = {
+                            userRef: user_id,
+                            userEmail: email,
+                            userName: userName,
+                             userProfilePic: dp_url
+                        };
+                        if (isRememberMeChecked) {
+                            const loggedUserInfoString = JSON.stringify(loggedUserInfo);
+                            AsyncStorage.setItem('userData', loggedUserInfoString)
+                                .then(() => {
+                                    console.log('Data stored successfully!');
+                                })
+                                .catch((error) => {
+                                    console.log('Error storing data:', error);
+                                });
+                        }
+                        setEmail('');
+                        setPassword('');
+                        setLoading(false);
+                        navigation.replace('NavBar'); // Navigate to the home screen
+                    });
+                } else {
+                    Alert.alert("Please verify your email first.");
+                    setLoading(false);
+                }
             })
             .catch((e) => {
-                if (e.code === 'auth/invalid-credential') setErrorMessage("Wrong Password");
-                if (e.code === 'auth/user-not-found') setErrorMessage('No account matches this email');
+                if (e.code === 'auth/invalid-email') setErrorMessage("Invalid Email.");
+                else if (e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-login-credentials') setErrorMessage("Invalid Credentials");
+                else if (e.code === 'auth/too-many-requests') setErrorMessage("Please try again later.");
+                else if (e.code === 'auth/user-not-found') setErrorMessage('No account matches this email');
                 else console.log(e);
                 setLoading(false);
             });
-            setLoading(false);
-        } catch (e) {
-            if (e.code === 'auth/invalid-credential') setErrorMessage("Wrong Password");
-            if (e.code === 'auth/user-not-found') setErrorMessage('No account matches this email');
-            else console.log(e);
+        } catch (error) {
+            if (error.code === 'auth/invalid-credential') setErrorMessage("Wrong Password");
+            else if (error.code === 'auth/user-not-found') setErrorMessage('No account matches this email');
+            else console.log(error);
             setLoading(false);
         }
     };
-
-    const intermediateSignUp = async (user) => {
-        if (user.emailVerified) {
-            const usersRef = collection(db, "users");
-            const q = query(usersRef, where("email", "==", email));
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                const userData = doc.data();
-                const { userName, user_id, email, dp_url } = userData;
-                const loggedUserInfo = {
-                    userRef: user_id,
-                    userEmail: email,
-                    userName: userName,
-                    userProfilePic: dp_url
-                };
-                setWelcomeUserName(userName);
-                if (isRememberMeChecked == true) {
-                    const loggedUserInfoString = JSON.stringify(loggedUserInfo);
-                    AsyncStorage.setItem('userData', loggedUserInfoString)
-                        .then(() => {
-                            console.log('Data stored successfully!');
-                        })
-                        .catch((error) => {
-                            console.log('Error storing data:', error);
-                        });
-                }
-                setEmail('');
-                setPassword('');
-                setLoading(false);
-                setLoggedInStatus(true);
-            });
-        } else {
-            alert("Please verify your email first.");
-        }
-    };
+    
 
     return (
         <ImageBackground source={require('../assets/loginsignupbg.jpeg')} style={styles.backgroundImage}>
@@ -249,19 +101,19 @@ export default function LoginScreen({ navigation }) {
                             value={password}
                             autoCapitalize="none"
                         />
-                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                            <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#aaaaaa" />
+                      <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                    <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="#aaaaaa" />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.checkboxContainer}>
-                        <Checkbox
-                            style={styles.checkbox}
-                            value={isRememberMeChecked}
-                            onValueChange={() => setIsRememberMeChecked(!isRememberMeChecked)}
-                            color={isRememberMeChecked ? '#e80909' : undefined}
-                        />
-                        <Text style={styles.checkboxLabel}>Keep me logged in</Text>
-                    </View>
+                <Checkbox
+                    style={styles.checkbox}
+                    status={isRememberMeChecked ? 'checked' : 'unchecked'}
+                    onPress={() => {setIsRememberMeChecked(!isRememberMeChecked);}}
+                    color={isRememberMeChecked ? '#e80909' : undefined}
+                />
+                <Text onPress={() => {setIsRememberMeChecked(!isRememberMeChecked);}} style={styles.checkboxLabel}>Keep me loged in</Text>
+            </View>
                     {errorMessage.length > 0 && <Text style={styles.errorMessage}>*{errorMessage}*</Text>}
                     <TouchableOpacity
                         disabled={password.length == 0 || email.length == 0}
@@ -279,6 +131,7 @@ export default function LoginScreen({ navigation }) {
                             navigation.navigate('SignUp')
                         }} style={styles.footerLink}>Sign up</Text></Text>
                     </View>
+                    
                 </View>
                 <Modal
                     visible={loggedInStatus}
@@ -445,4 +298,3 @@ const styles = StyleSheet.create({
 });
 
 
-    

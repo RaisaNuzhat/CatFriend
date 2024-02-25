@@ -15,7 +15,7 @@ const AboutUs = () => {
   return (
     <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.heading}>About Us</Text>
+        {/* <Text style={styles.heading}>About Us</Text> */}
         <Text style={styles.text}>
           Welcome to our app! This app is designed to help users connect and share their experiences.
           Feel free to explore and interact with other users' content.
@@ -62,7 +62,7 @@ const AboutUs = () => {
         <Text style={styles.subHeading}>User's Guide</Text>
         <WebView
           style={{ alignSelf: 'stretch', height: 300 }}
-          source={{ uri: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }} // Replace VIDEO_ID with the ID of your YouTube video
+          source={{ uri: 'https://www.youtube.com/watch?v=DLzsyvUXrss' }} // Replace VIDEO_ID with the ID of your YouTube video
         />
       </ScrollView>
     </ImageBackground>
@@ -90,6 +90,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     marginTop: 20,
+    color:'#38598b',
+    textAlign:'center',
+    marginTop:30,
+    marginBottom:30,
   },
   text: {
     fontSize: 16,
@@ -105,6 +109,8 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: 'row',
     marginBottom: 20,
+    alignItems:'center',
+    justifyContent:'center',
   },
 });
 
