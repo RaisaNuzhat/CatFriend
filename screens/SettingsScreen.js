@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, Switch, StyleSheet, TouchableOpacity, ImageBackground, TextInput, Button, Modal, FlatList, ScrollView, Alert } from 'react-native';
-import { auth } from '../firebase'; // Assuming you have imported auth from firebase
+import { auth, db } from '../firebase'; 
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import Icon from the library
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
@@ -10,7 +11,7 @@ const SettingsScreen = () => {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [feedbackFields, setFeedbackFields] = useState([
     { label: 'Overall Experience', value: 'experience' },
-    { label: 'Bugs/Issues Encountered', value: 'bugs' },
+    { label: 'Bugs/Issues Encountered', value: 'bugs', options: ['Bug', 'Issue', 'Crash', 'Other'] },
     { label: 'Feature Requests', value: 'features' },
   ]);
   const [feedbackValues, setFeedbackValues] = useState({});
@@ -25,14 +26,42 @@ const SettingsScreen = () => {
     });
   };
 
-  const handleEmailSubmit = () => {
-    // Simple email validation
-    if (!validateEmail(userEmail)) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address.');
-    } else {
-      setShowFeedbackForm(true);
+
+
+ 
+
+
+
+const handleEmailSubmit = async () => {
+  // Simple email validation
+  if (!validateEmail(userEmail)) {
+    Alert.alert('Invalid Email', 'Please enter a valid email address.');
+    return;
+  }
+  
+  try {
+    // Check if the email exists in the "users" collection
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", userEmail));
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      // If no document with the provided email exists in the "users" collection
+      Alert.alert('Invalid Email', 'Please provide a registered email address.');
+      return;
     }
-  };
+
+    setShowFeedbackForm(true);
+  } catch (error) {
+    console.error('Error during email submission:', error);
+    Alert.alert('Error', 'An unexpected error occurred. Please try again later.');
+  }
+};
+
+  
+
+  
+  
 
   const handleFeedbackSubmit = () => {
     // Handle feedback submission
@@ -65,12 +94,25 @@ const SettingsScreen = () => {
             value={feedbackValues[field.value] || ''}
           />
         ) : (
-          <TouchableOpacity style={styles.input} onPress={() => setModalVisible(true)}>
-            <View style={styles.dropdownContainer}>
-              <Text style={styles.dropdownText}>{feedbackValues[field.value] || 'Select an option'}</Text>
-              <Icon name="angle-down" size={20} color="#000" style={styles.dropdownIcon} />
-            </View>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity style={styles.input} onPress={() => setModalVisible(true)}>
+              <View style={styles.dropdownContainer}>
+                <Text style={styles.dropdownText}>{feedbackValues[field.value] || 'Select an option'}</Text>
+                <Icon name="angle-down" size={20} color="#000" style={styles.dropdownIcon} />
+              </View>
+            </TouchableOpacity>
+            {feedbackValues.bugs && (
+              <View>
+                <Text style={styles.label}>Additional Details:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter additional details"
+                  onChangeText={(text) => handleInputChange('bugDetails', text)}
+                  value={feedbackValues['bugDetails'] || ''}
+                />
+              </View>
+            )}
+          </View>
         )}
       </View>
     ));
@@ -226,7 +268,6 @@ const styles = StyleSheet.create({
   dropdownIcon: {
     marginLeft: 10,
   },
-  
 });
 
 export default SettingsScreen;
