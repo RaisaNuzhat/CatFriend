@@ -6,6 +6,10 @@ import SettingsScreen from './SettingsScreen';
 import BlogPage from './BlogPage'; 
 import ProfileScreen from './ProfileScreen'; 
 import AboutUs from './AboutUs'; 
+import BlogUI from './ABlog';
+import Writeblog from './Writeblog';
+import BlogListItem from '../component/BlogsListItem';
+import BlogList from './AllBlogLists';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +21,8 @@ const NavBar = () => {
           let iconName;
 
           if (route.name === 'BlogPage') {
+            iconName = focused ? 'book' : 'book-outline';
+          } else if (route.name== 'WritePost') {
             iconName = focused ? 'book' : 'book-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
@@ -34,10 +40,12 @@ const NavBar = () => {
         tabBarStyle: { backgroundColor: '#ffffff', borderTopWidth: 0 },
       })}
     >
-      <Tab.Screen name="BlogPage" component={BlogPage} />
+      <Tab.Screen name="WriteBlog" component={Writeblog} />
+      <Tab.Screen name="BlogList" component={BlogList} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
       <Tab.Screen name="AboutUs" component={AboutUs} />
+      
     </Tab.Navigator>
   );
 };

@@ -5,13 +5,16 @@ import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor'
 // import { useSelector } from 'react-redux';
 import { auth, db } from '../firebase';
 import { addDoc, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
-const BlogPage = ({navigation}) => {
+
+const Writeblog = ({navigation}) => {
+
   const editorRef = useRef(null);
 
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [user, setuser] = useState({})
+
 
   const handleHead = ({tintColor}) => <Text style={{color: tintColor}}>H1</Text>
 
@@ -97,10 +100,7 @@ const BlogPage = ({navigation}) => {
       <View style={styles.editorContainer}>
         <RichToolbar
             editor={editorRef}
-            actions={[ actions.setBold, actions.setItalic, actions.setUnderline,
-              actions.setStrikethrough, actions.heading1,actions.insertLink, actions.insertBulletsList,
-              actions.insertOrderedList,actions.code,actions.blockquote,actions.alignLeft,actions.alignCenter,actions.alignRight,actions.setSuperscript, actions.setSubscript, 
-              actions.removeFormat,actions.undo,actions.redo ]}
+            actions={[ actions.setBold, actions.setItalic, actions.setUnderline,actions.setStrikethrough, actions.heading1,actions.insertLink, actions.insertBulletsList,actions.insertOrderedList,actions.code,actions.blockquote,actions.alignLeft,actions.alignCenter,actions.alignRight,actions.setSuperscript, actions.setSubscript, actions.removeFormat,actions.undo,actions.redo ]}
             iconMap={{ [actions.heading1]: handleHead }}
             selectedIconTint="#000"
             disabledIconTint="#bfbfbf"
@@ -171,4 +171,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-export default BlogPage;
+
+export default Writeblog;
