@@ -130,9 +130,9 @@ export default function LoginScreen({ navigation }) {
                     style={styles.checkbox}
                     status={isRememberMeChecked ? 'checked' : 'unchecked'}
                     onPress={() => {setIsRememberMeChecked(!isRememberMeChecked);}}
-                    color={isRememberMeChecked ? '#e80909' : undefined}
+                    color={isRememberMeChecked ? '#38598b' : undefined}
                 />
-                <Text onPress={() => {setIsRememberMeChecked(!isRememberMeChecked);}} style={styles.checkboxLabel}>Keep me loged in</Text>
+                <Text onPress={() => {setIsRememberMeChecked(!isRememberMeChecked);}} style={styles.checkboxLabel}>Keep me logged in</Text>
             </View>
                     {errorMessage.length > 0 && <Text style={styles.errorMessage}>*{errorMessage}*</Text>}
                     <TouchableOpacity
@@ -266,6 +266,8 @@ const styles = StyleSheet.create({
     footerText: {
         fontSize: 16,
         color: '#38598b',
+        fontWeight: '500',
+        textAlign:'center',
     },
     footerLink: {
         fontSize: 16,

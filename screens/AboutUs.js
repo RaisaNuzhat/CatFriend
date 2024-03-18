@@ -58,7 +58,7 @@ const AboutUs = () => {
       });
       const averageRating = reviewsData.length > 0 ?( totalRatings / reviewsData.length) : 0;
 
-      // Update state
+      
       setReviews(reviewsData);
       setTotalRatings(totalRatings);
       setAverageRating(averageRating);
@@ -110,7 +110,7 @@ const AboutUs = () => {
                 userRef: user_id,
                 userEmail: email,
                 userName: userName,
-                  userProfilePic: dp_url
+                userProfilePic: dp_url
             };
             setuser(loggedUserInfo)
           }
@@ -204,8 +204,8 @@ const AboutUs = () => {
         <WebView
           style={styles.video}
           javaScrptEnabled={true}
-          // style={{ alignSelf: 'stretch', height: 300 }}
-          source={{ uri: 'https://www.youtube.com/embed/DLzsyvUXrss' }} // Replace VIDEO_ID with the ID of your YouTube video
+          
+          source={{ uri: 'https://www.youtube.com/embed/DLzsyvUXrss' }} 
         />
       </ScrollView>
     </ImageBackground>

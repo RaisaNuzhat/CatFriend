@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet, TouchableOpacity, ImageBackground, TextInput, Button, Modal, FlatList, ScrollView, Alert } from 'react-native';
-import { auth, db } from '../firebase'; 
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, TextInput, Button, Modal, FlatList, ScrollView, Alert } from 'react-native';
+import { db } from '../firebase'; 
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
@@ -9,61 +9,74 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SettingsScreen = () => {
   const navigation = useNavigation();
   const [userEmail, setUserEmail] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [showDistrictInput, setShowDistrictInput] = useState(false);
+  const [showFeedbackInput, setShowFeedbackInput] = useState(false);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
-  const [feedbackFields, setFeedbackFields] = useState([
-    { label: 'Overall Experience', value: 'experience' },
-    { label: 'Bugs/Issues Encountered', value: 'bugs', options: ['Bug', 'Issue', 'Crash', 'Other'] },
-    { label: 'Feature Requests', value: 'features' },
-  ]);
-  const [feedbackValues, setFeedbackValues] = useState({});
+
+  const [countries, setCountries] = useState(['USA', 'UK', 'Canada', 'Bangladesh']); // Updated countries
+const [districts, setDistricts] = useState({
+  'USA': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Miami', 'San Francisco'],
+  'UK': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds', 'Glasgow'],
+  'Canada': ['Toronto', 'Vancouver', 'Montreal', 'Calgary', 'Ottawa', 'Edmonton'],
+  'Bangladesh': [
+    'Dhaka', 'Chittagong', 'Khulna', 'Rajshahi', 'Barisal', 'Sylhet', 'Rangpur',
+    
+    'Mymensingh', 'Comilla', 'Jessore', 'Narayanganj', 'Bogra', 'Dinajpur', 'Tangail',
+    'Faridpur', 'Jamalpur', 'Natore', 'Pabna', 'Saidpur', 'Naogaon', 'Kushtia', 'CoxsBazar',
+    'Tongi', 'Brahmanbaria', 'Feni', 'Sirajganj', 'Gazipur', 'Noakhali', 'Maulvi Bazar', 'Bagerhat',
+    'Sherpur', 'Joypurhat', 'Chandpur', 'Meherpur', 'Thakurgaon', 'Magura', 'Bhola', 'Manikganj',
+    'Chapainawabganj', 'Patuakhali', 'Pirojpur', 'Kishoreganj', 'Jhenaidah', 'Shariatpur', 'Lakshmipur',
+    'Khagrachari', 'Netrokona', 'Sunamganj', 'Panchagarh', 'Bandarban', 'Satkhira', 'Narsingdi',
+    'Narail', 'Gopalganj', 'Nilphamari', 'Habiganj', 'Madaripur', 'Rangamati', 'Shariatpur'
+  ]
+});
+
+  const [feedbackValues, setFeedbackValues] = useState({
+    country: '',
+    district: '',
+    feedback: ''
+  });
   const [modalVisible, setModalVisible] = useState(false);
-  const bugOptions = ['Bug', 'Issue', 'Crash', 'Other'];
 
   const handleLogout = async () => {
     try {
-        await AsyncStorage.removeItem('userData'); 
-        await auth.signOut()
-        navigation.replace('LogIn'); 
+      await AsyncStorage.removeItem('userData'); 
+      navigation.replace('LogIn'); 
     } catch (error) {
-        console.log('Error signing out:', error);
+      console.log('Error signing out:', error);
     }
-};
+  };
 
-
- 
-
-
-
-const handleEmailSubmit = async () => {
-
-  if (!validateEmail(userEmail)) {
-    Alert.alert('Invalid Email', 'Please enter a valid email address.');
-    return;
-  }
+  const handleEmailSubmit = async () => {
   
-  try {
-    // Check if the email exists in the "users" collection
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", userEmail));
-    const querySnapshot = await getDocs(q);
-    
-    if (querySnapshot.empty) {
-      // If no document with the provided email exists in the "users" collection
-      Alert.alert('Invalid Email', 'Please provide a registered email address.');
-      return;
-    }
-
+    setSelectedCountry('');
+    setSelectedDistrict('');
+    setFeedbackValues({
+      country: '',
+      district: '',
+      feedback: ''
+    });
+    setShowDistrictInput(false);
+    setShowFeedbackInput(false);
+    setModalVisible(false);
     setShowFeedbackForm(true);
-  } catch (error) {
-    console.error('Error during email submission:', error);
-    Alert.alert('Error', 'An unexpected error occurred. Please try again later.');
-  }
-};
+  };
 
-  
+  const handleCountrySelect = (country) => {
+    setSelectedCountry(country);
+    setShowDistrictInput(true);
+    setFeedbackValues({ ...feedbackValues, country });
+    setModalVisible(false);
+  };
 
-  
-  
+  const handleDistrictSelect = (district) => {
+    setSelectedDistrict(district);
+    setShowFeedbackInput(true);
+    setFeedbackValues({ ...feedbackValues, district });
+    setModalVisible(false);
+  };
 
   const handleFeedbackSubmit = () => {
     // Handle feedback submission
@@ -71,74 +84,57 @@ const handleEmailSubmit = async () => {
     // Show success alert
     Alert.alert('Success', 'Feedback submitted successfully.');
     // Reset form state
-    setFeedbackValues({});
+    setFeedbackValues({
+      country: '',
+      district: '',
+      feedback: ''
+    });
     setShowFeedbackForm(false);
   };
 
-  const handleInputChange = (fieldName, text) => {
-    setFeedbackValues({ ...feedbackValues, [fieldName]: text });
-  };
-
-  const handleOptionSelect = (value) => {
-    setFeedbackValues({ ...feedbackValues, bugs: value }); // Update feedback value with selected option
-    setModalVisible(false);
-  };
-
-  const renderFeedbackFields = () => {
-    return feedbackFields.map((field, index) => (
-      <View key={index}>
-        <Text style={styles.label}>{field.label}</Text>
-        {field.value !== 'bugs' ? (
-          <TextInput
-            style={styles.input}
-            placeholder={`Enter ${field.label}`}
-            onChangeText={(text) => handleInputChange(field.value, text)}
-            value={feedbackValues[field.value] || ''}
-          />
-        ) : (
+  const renderFeedbackForm = () => {
+    return (
+      <View>
+        <Text style={styles.label}>Country</Text>
+        <TouchableOpacity style={styles.input} onPress={() => setModalVisible(true)}>
+          <View style={styles.dropdownContainer}>
+            <Text style={styles.dropdownText}>{selectedCountry || 'Select a country'}</Text>
+            <Icon name="angle-down" size={20} color="#000" style={styles.dropdownIcon} />
+          </View>
+        </TouchableOpacity>
+        {showDistrictInput && (
           <View>
+            <Text style={styles.label}>District</Text>
             <TouchableOpacity style={styles.input} onPress={() => setModalVisible(true)}>
               <View style={styles.dropdownContainer}>
-                <Text style={styles.dropdownText}>{feedbackValues[field.value] || 'Select an option'}</Text>
+                <Text style={styles.dropdownText}>{selectedDistrict || 'Select a district'}</Text>
                 <Icon name="angle-down" size={20} color="#000" style={styles.dropdownIcon} />
               </View>
             </TouchableOpacity>
-            {feedbackValues.bugs && (
-              <View>
-                <Text style={styles.label}>Additional Details:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter additional details"
-                  onChangeText={(text) => handleInputChange('bugDetails', text)}
-                  value={feedbackValues['bugDetails'] || ''}
-                />
-              </View>
-            )}
+          </View>
+        )}
+        {showFeedbackInput && (
+          <View>
+            <Text style={styles.label}>Feedback</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your feedback"
+              onChangeText={(text) => setFeedbackValues({ ...feedbackValues, feedback: text })}
+              value={feedbackValues.feedback}
+              multiline
+            />
+            <Button title="Submit Feedback" onPress={handleFeedbackSubmit} />
           </View>
         )}
       </View>
-    ));
-  };
-
-  const validateEmail = (email) => {
-    // Very basic email validation
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    );
   };
 
   return (
     <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.container}>
-          <Text style={styles.sectionTitle}>General Settings</Text>
-          <View style={styles.settingItem}>
-            <Text style={styles.settingLabel}>Notifications</Text>
-            <Switch /* Add functionality to handle notifications */ />
-          </View>
           <Text style={styles.sectionTitle}>Account Settings</Text>
-          <View style={styles.settingItem}>
-            <Text style={styles.settingLabel}>Change Password</Text>
-            <Text style={styles.settingAction} /* Add functionality to handle password change */>Change</Text>
-          </View>
           <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
             <Text style={styles.settingLabel}>Logout</Text>
             <Text style={styles.settingAction}>Logout</Text>
@@ -157,8 +153,7 @@ const handleEmailSubmit = async () => {
           ) : (
             <View>
               <Text style={styles.sectionTitle}>Feedback Form</Text>
-              {renderFeedbackFields()}
-              <Button title="Submit Feedback" onPress={handleFeedbackSubmit} />
+              {renderFeedbackForm()}
             </View>
           )}
           <Modal
@@ -172,10 +167,13 @@ const handleEmailSubmit = async () => {
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
                 <FlatList
-                  data={bugOptions}
+                  data={selectedCountry ? districts[selectedCountry] : countries}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.modalOption} onPress={() => handleOptionSelect(item)}>
+                    <TouchableOpacity
+                      style={styles.modalOption}
+                      onPress={selectedCountry ? () => handleDistrictSelect(item) : () => handleCountrySelect(item)}
+                    >
                       <Text style={styles.optionText}>{item}</Text>
                     </TouchableOpacity>
                   )}
@@ -218,7 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   settingAction: {
-    color: '#007bff', // Link color
+    color: '#007bff', 
     fontSize: 16,
   },
   input: {
