@@ -2,10 +2,10 @@ import React ,{useState} from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import SettingsScreen from './SettingsScreen'; // Assuming this is your existing SettingsScreen component
-import BlogPage from './BlogPage'; // Importing the BlogPage component
-import ProfileScreen from './ProfileScreen'; // Assuming this is your existing ProfileScreen component
-import AboutUs from './AboutUs'; // Assuming this is your existing AboutUs component
+import SettingsScreen from './SettingsScreen'; 
+import BlogPage from './BlogPage'; 
+import ProfileScreen from './ProfileScreen'; 
+import AboutUs from './AboutUs'; 
 
 const Tab = createBottomTabNavigator();
 

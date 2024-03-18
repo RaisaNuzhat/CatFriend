@@ -516,6 +516,7 @@ export default function SignUpScreen({ navigation }) {
             autoCapitalize="none"
           />
           <TouchableOpacity
+          
             style={styles.birthdayPicker}
             onPress={() => setBirthDateModalStatus(true)}>
             <Text style={{ marginTop: 10, fontWeight: '300', color: '#353635', fontSize: 16 }}>
@@ -543,7 +544,7 @@ export default function SignUpScreen({ navigation }) {
           <TouchableOpacity
             disabled={password.length == 0 || email.length == 0}
             style={styles.button}
-            onPress={() => onSignUpPress()}>
+            onPress={() => onSingUpPress()}>
             <Text style={styles.buttonTitle}>
               {loading ? <ActivityIndicator size={20} color={"#fff"} /> : "Sign up"}
             </Text>

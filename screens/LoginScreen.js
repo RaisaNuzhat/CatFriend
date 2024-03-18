@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Modal, ActivityIndicator, Pressable, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Modal, ActivityIndicator, Pressable, ImageBackground, Alert } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, doc, setDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { Checkbox } from 'react-native-paper';
+import moment from 'moment';
+
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false); // Added state to manage password visibility
+    const [showPassword, setShowPassword] = useState(false); 
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [isRememberMeChecked, setIsRememberMeChecked] = useState(false);
     const [loggedInStatus, setLoggedInStatus] = useState(false);
     const [welcomeUserName, setWelcomeUserName] = useState('');
+    const [birthDate, setBirthDate] = useState(moment(new Date()).format('DD/MM/YYYY'));
+    const [birthDateModalStatus, setBirthDateModalStatus] = useState(false);
 
     const signIn = async () => {
         try {
@@ -31,12 +35,14 @@ export default function LoginScreen({ navigation }) {
                     const querySnapshot = await getDocs(q);
                     querySnapshot.forEach((doc) => {
                         const userData = doc.data();
-                        const { userName, user_id, email, dp_url } = userData;
+                        const { userName, user_id, email, dp_url, birthday } = userData;
                         const loggedUserInfo = {
                             userRef: user_id,
                             userEmail: email,
                             userName: userName,
-                             userProfilePic: dp_url
+                             userProfilePic: dp_url,
+                             birthday: birthday
+                            
                         };
                         if (isRememberMeChecked) {
                             const loggedUserInfoString = JSON.stringify(loggedUserInfo);
@@ -51,7 +57,7 @@ export default function LoginScreen({ navigation }) {
                         setEmail('');
                         setPassword('');
                         setLoading(false);
-                        navigation.replace('NavBar'); // Navigate to the home screen
+                        navigation.replace('NavBar'); 
                     });
                 } else {
                     Alert.alert("Please verify your email first.");
@@ -73,6 +79,20 @@ export default function LoginScreen({ navigation }) {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const checkLoggedIn = async () => {
+            const userData = await AsyncStorage.getItem('userData');
+            if (userData) {
+              const parsedUserData = JSON.parse(userData);
+              navigation.replace('NavBar')
+            } else {
+              
+            }
+          };
+          checkLoggedIn()
+    }, [])
+
     
 
     return (

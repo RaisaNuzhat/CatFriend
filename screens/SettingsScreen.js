@@ -4,6 +4,7 @@ import { auth, db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
@@ -18,14 +19,15 @@ const SettingsScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const bugOptions = ['Bug', 'Issue', 'Crash', 'Other'];
 
-  const handleLogout = () => {
-    auth.signOut().then(() => {
-      navigation.replace('LogIn');
-    }).catch(error => {
-      console.error('Error signing out:', error);
-    });
-  };
-
+  const handleLogout = async () => {
+    try {
+        await AsyncStorage.removeItem('userData'); 
+        await auth.signOut()
+        navigation.replace('LogIn'); 
+    } catch (error) {
+        console.log('Error signing out:', error);
+    }
+};
 
 
  
@@ -33,7 +35,7 @@ const SettingsScreen = () => {
 
 
 const handleEmailSubmit = async () => {
-  // Simple email validation
+
   if (!validateEmail(userEmail)) {
     Alert.alert('Invalid Email', 'Please enter a valid email address.');
     return;

@@ -1,31 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, ImageBackground, Image, Modal } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'; // Import FontAwesome from @expo/vector-icons for icons
+import { FontAwesome } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 const BlogPage = () => {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      username: 'User1',
-      dp: 'https://via.placeholder.com/50', // DP stands for display picture
-      caption: 'Beautiful sunset view!',
-      image: 'https://via.placeholder.com/300',
-      likes: 10,
-      comments: ['Amazing!', 'Love it!']
-    },
-    {
-      id: 2,
-      username: 'User2',
-      dp: 'https://via.placeholder.com/50',
-      caption: 'Exploring the wilderness!',
-      image: 'https://via.placeholder.com/300',
-      likes: 20,
-      comments: ['Wow!', 'Incredible!']
-    }
-  ]);
+  const [posts, setPosts] = useState([]);
   const [caption, setCaption] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [showPostOptions, setShowPostOptions] = useState(false);
+  const [cameraPermission, setCameraPermission] = useState(null);
+  const [galleryPermission, setGalleryPermission] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+      const { status: galleryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      setCameraPermission(cameraStatus);
+      setGalleryPermission(galleryStatus);
+
+      if (cameraStatus !== 'granted' || galleryStatus !== 'granted') {
+        alert('Permission to access camera roll is required!');
+      }
+    })();
+  }, []);
+
+  const pickImageFromGallery = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setSelectedImage(result.uri);
+      setShowPostOptions(true);
+    }
+  };
 
   const handlePost = () => {
     if (!caption || !selectedImage) {
@@ -35,8 +47,8 @@ const BlogPage = () => {
 
     const newPost = {
       id: posts.length + 1,
-      username: 'Current User', // Replace with actual user data
-      dp: 'https://via.placeholder.com/50', // Replace with actual user's display picture
+      username: 'Your Username',
+      dp: 'https://via.placeholder.com/50',
       caption: caption,
       image: selectedImage,
       likes: 0,
@@ -46,13 +58,15 @@ const BlogPage = () => {
     setPosts([...posts, newPost]);
     setCaption('');
     setSelectedImage(null);
-    setShowPostOptions(false); // Hide post options after posting
+    setShowPostOptions(false);
   };
 
-  const handleImageSelect = () => {
-    // Here, you would implement image selection logic using a library like Expo ImagePicker
-    // For simplicity, we'll just set a placeholder image URL
-    setSelectedImage('https://via.placeholder.com/300');
+  const handleLike = (postId) => {
+    // Implement like functionality here
+  };
+
+  const handleComment = (postId) => {
+    // Implement comment functionality here
   };
 
   return (
@@ -74,19 +88,14 @@ const BlogPage = () => {
               <Image source={{ uri: post.image }} style={styles.postImage} />
               <Text style={styles.postCaption}>{post.caption}</Text>
               <View style={styles.actionsContainer}>
-                <TouchableOpacity onPress={() => { /* Add functionality for liking */ }}>
+                <TouchableOpacity onPress={() => handleLike(post.id)}>
                   <FontAwesome name="heart-o" size={24} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { /* Add functionality for commenting */ }}>
+                <TouchableOpacity onPress={() => handleComment(post.id)}>
                   <FontAwesome name="comment-o" size={24} color="black" />
                 </TouchableOpacity>
               </View>
               <Text style={styles.likesText}>Likes: {post.likes}</Text>
-              <View>
-                {post.comments.map((comment, index) => (
-                  <Text key={index} style={styles.commentText}>{comment}</Text>
-                ))}
-              </View>
             </View>
           ))}
         </ScrollView>
@@ -101,7 +110,7 @@ const BlogPage = () => {
               <TouchableOpacity style={styles.closeButton} onPress={() => setShowPostOptions(false)}>
                 <FontAwesome name="close" size={24} color="black" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.selectImageButton} onPress={handleImageSelect}>
+              <TouchableOpacity style={styles.selectImageButton} onPress={pickImageFromGallery}>
                 <Text style={styles.selectImageText}>Select Image</Text>
               </TouchableOpacity>
               {selectedImage && (
@@ -151,7 +160,7 @@ const styles = StyleSheet.create({
   },
   post: {
     marginBottom: 20,
-    marginTop:20,
+    marginTop: 20,
     borderRadius: 10,
     overflow: 'hidden',
   },
@@ -161,32 +170,21 @@ const styles = StyleSheet.create({
   },
   postCaption: {
     fontSize: 16,
-
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
   actionsContainer: {
     flexDirection: 'row',
-    gap:20,
-    fontSize:20,
-    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 10,
     paddingBottom: 5,
   },
   likesText: {
     paddingHorizontal: 10,
     paddingBottom: 5,
-
-  },
-  commentText: {
-    paddingHorizontal: 10,
-    paddingBottom: 5,
-    fontStyle: 'italic',
-    fontSize:14,
   },
   plusIcon: {
     marginRight: 10,
-  
   },
   modalBackground: {
     flex: 1,
@@ -251,3 +249,5 @@ const styles = StyleSheet.create({
 });
 
 export default BlogPage;
+
+

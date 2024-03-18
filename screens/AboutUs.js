@@ -1,16 +1,156 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, ImageBackground, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Dimensions, ImageBackground, TouchableOpacity, Button, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth, db } from '../firebase';
+import { collection, doc, serverTimestamp, setDoc, getDocs, query, orderBy, limit, aggregate, addDoc, where, updateDoc } from 'firebase/firestore';
+import 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
 const AboutUs = () => {
+  const [user, setuser] = useState({})
   const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalRatings, setTotalRatings] = useState(0);
+  const [totalRatingUsers, setTotalRatingUsers] = useState(0);
+  const [userLocation, setUserLocation] = useState(null); 
+  const [userAlreadyReviewed, setuserAlreadyReviewed] = useState(false)
+  const [userReviewDoc, setuserReviewDoc] = useState('')
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        fetchReviews(); 
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  
+  const fetchReviews = async () => {
+    try {
+      
+      const reviewsSnapshot = await getDocs(query(collection(db, 'reviews'), orderBy('timestamp', 'desc')));
+
+      const reviewsData = reviewsSnapshot.docs.map(doc => {
+        const newDoc = doc.data()
+        newDoc.id = doc.id
+        return newDoc
+      });
+      
+      let totalRatings = 0;
+      reviewsData.forEach((item) => {
+        totalRatings += item.rating;
+        if(item.userId==user.userRef){
+          setuserAlreadyReviewed(true)
+          setRating(item.rating)
+          setReviewText(item.reviewText)
+          setuserReviewDoc(item.id)
+        }
+      });
+      const averageRating = reviewsData.length > 0 ?( totalRatings / reviewsData.length) : 0;
+
+      // Update state
+      setReviews(reviewsData);
+      setTotalRatings(totalRatings);
+      setAverageRating(averageRating);
+      setTotalRatingUsers(reviewsData.length)
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    }
+  };
+
 
   const handleRating = (value) => {
-    // If the same star is clicked again, withdraw the rating
     const newRating = value === rating ? 0 : value;
     setRating(newRating);
   };
+
+
+
+  const reviewedStar = (star)=>{
+    const starTag = []
+    for(let i=0;i<star;i++){
+      starTag.push(i+1)
+    }
+    return starTag
+
+  }
+
+  const openLink = (url) => {
+    Linking.openURL(url);
+  };
+
+
+
+
+  useEffect(() => {
+    const getUser = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      if(userData){
+        const user = JSON.parse(userData);
+        setuser(user)
+      }
+      else{
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("email", "==", auth.currentUser.email));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            const userData = doc.data();
+            const { userName, user_id, email, dp_url } = userData;
+            const loggedUserInfo = {
+                userRef: user_id,
+                userEmail: email,
+                userName: userName,
+                  userProfilePic: dp_url
+            };
+            setuser(loggedUserInfo)
+          }
+        );
+      }
+    }
+    getUser()
+  }, [])
+
+  useEffect(() => {
+    fetchReviews()
+  }, [user])
+  
+
+
+  const submitReview = async () => {
+    try {
+      const review = {
+        userId: user.userRef,
+        userName: user.userName,
+        rating: rating,
+        reviewText,
+        timestamp: new Date(),
+      };
+      const reviewColRef = collection(db,'reviews')
+      if(!userAlreadyReviewed){
+        const docRef = await addDoc(reviewColRef,review);
+        Alert.alert('Thank you for your review and rating!');
+      }
+      else{
+        const updatedDoc = await updateDoc(doc(db,'reviews',userReviewDoc), review)
+        Alert.alert("Thank you. Your Review has been updated!")
+      }
+      fetchReviews();
+    } catch (error) {
+      console.error('Error submitting review and rating:', error);
+      Alert.alert('Error submitting review and rating. Please try again later.');
+    }
+  };
+
 
   return (
     <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
@@ -59,10 +199,13 @@ const AboutUs = () => {
             </TouchableOpacity>
           ))}
         </View>
+        <Button title={(userAlreadyReviewed ?"Update " : "Submit ") + "Submit Review"} onPress={submitReview} />
         <Text style={styles.subHeading}>User's Guide</Text>
         <WebView
-          style={{ alignSelf: 'stretch', height: 300 }}
-          source={{ uri: 'https://www.youtube.com/watch?v=DLzsyvUXrss' }} // Replace VIDEO_ID with the ID of your YouTube video
+          style={styles.video}
+          javaScrptEnabled={true}
+          // style={{ alignSelf: 'stretch', height: 300 }}
+          source={{ uri: 'https://www.youtube.com/embed/DLzsyvUXrss' }} // Replace VIDEO_ID with the ID of your YouTube video
         />
       </ScrollView>
     </ImageBackground>
@@ -111,6 +254,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems:'center',
     justifyContent:'center',
+  },
+  video: {
+    height: 200,
+    width: Dimensions.get('window').width - 40,
   },
 });
 
