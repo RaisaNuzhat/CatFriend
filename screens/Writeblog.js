@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView ,ImageBackground} from 'react-native';
 import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
 // import { useSelector } from 'react-redux';
 import { auth, db } from '../firebase';
@@ -94,8 +94,9 @@ const Writeblog = ({navigation}) => {
 
 
   return (
+    <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <Text style={styles.title}>Write a Blog</Text>
+      <Text style={styles.title}>What's on your mind?</Text>
       <TextInput value={title} onChangeText={(text)=>setTitle(text)} style={styles.input} placeholder='Title of the blog..'/>
       <View style={styles.editorContainer}>
         <RichToolbar
@@ -122,7 +123,9 @@ const Writeblog = ({navigation}) => {
       <TouchableOpacity onPress={postABlog} style={styles.postButton}>
         <Text style={styles.postButtonText}>Post</Text>
       </TouchableOpacity>
+     
     </ScrollView>
+    </ImageBackground>
   );
 };
 
@@ -131,10 +134,15 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 8,
     paddingBottom:50,
-    backgroundColor:'#fff'
+    
   },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+},
   title: {
-    color:'#e80505',
+    color:'#38598b',
     fontSize:30,
     fontWeight:'bold',
     marginBottom:15
@@ -146,19 +154,19 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
     borderRadius:8,
     borderWidth:1,
-    borderColor:'#e80505'
+    borderColor:'#38598b'
   },
   editorContainer:{
     borderRadius:10,
     overflow:'hidden',
     borderWidth:1,
-    borderColor:'#e80505'
+    borderColor:'#38598b'
   },
   editor: {
     minHeight:350,
   },
   postButton: {
-    backgroundColor: '#e80505',
+    backgroundColor: '#38598b',
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 24,

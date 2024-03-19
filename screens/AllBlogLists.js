@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View,TouchableOpacity } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View,TouchableOpacity ,ImageBackground} from 'react-native';
 import BlogListItem from '../component/BlogsListItem';
 import { collection, query,getDocs, orderBy, limit, startAfter, endBefore, limitToLast } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -112,7 +112,8 @@ const BlogList = ({navigation}) => {
   }, [isFocused])
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{paddingTop:10,paddingHorizontal:10, flex: 1,paddingBottom:50,backgroundColor:'#fffcfc'}}>
+    <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{paddingTop:10,paddingHorizontal:10, flex: 1,paddingBottom:50}}>
       
       <Text style={styles.HeaderTitle}>Blogs</Text>
       {
@@ -150,24 +151,38 @@ const BlogList = ({navigation}) => {
           </TouchableOpacity>
       </View>
     </ScrollView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 8,
+    paddingBottom:50,
+    
+  },
   HeaderTitle:{
-    color:'#e80505',
+    color:'#38598b',
     fontSize:30,
     fontWeight:'bold',
     marginBottom:15
   },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+},
   buttonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#e80505',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
+    backgroundColor: '#38598b',
+    padding: 10,
+    
+    borderRadius: 16,
+    width: 80,
+    height:80,
   },
   buttonText: {
     color: 'white',

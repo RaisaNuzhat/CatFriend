@@ -3,6 +3,6 @@ import React from 'react'
 
 export default function HRline() {
   return (
-    <View style={{ borderBottomColor: '#adacac', borderBottomWidth: 0.8, }} />
+    <View style={{ borderBottomColor: '#38598b', borderBottomWidth: 0.8, }} />
   )
 }

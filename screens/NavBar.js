@@ -20,16 +20,16 @@ const NavBar = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'BlogPage') {
-            iconName = focused ? 'book' : 'book-outline';
-          } else if (route.name== 'WritePost') {
-            iconName = focused ? 'book' : 'book-outline';
+          if (route.name === 'WriteBlog') {
+            iconName = focused ? 'newspaper' : 'newspaper-outline';
+          } else if (route.name== 'BlogList') {
+            iconName = focused ? 'list' : 'list-outline';
           } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
+            iconName = focused ? 'person-circle' : 'person-circle-outline';
           } else if (route.name === 'Settings') {
             iconName = focused ? 'settings' : 'settings-outline';
           } else if (route.name === 'AboutUs') {
-            iconName = focused ? 'help-circle' : 'help-circle-outline';
+            iconName = focused ? 'bulb' : 'bulb-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;

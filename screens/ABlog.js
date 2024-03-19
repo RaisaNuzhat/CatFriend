@@ -268,8 +268,9 @@ export default BlogUI;
   const styles = {
     container: {
       flex: 1,
-      paddingHorizontal: 8,
-      paddingTop:1,
+      margin:'auto',
+      padding: 8,
+      paddingBottom:50,
     },
     header: {
       flexDirection: 'row',
@@ -280,7 +281,7 @@ export default BlogUI;
       width: 40,
       height: 40,
       borderRadius: 20,
-      marginRight: 8,
+      margin: 8,
     },
     authorInfo: {
       flex: 1,
@@ -301,13 +302,13 @@ export default BlogUI;
       fontSize: 22,
       fontWeight: 'bold',
       marginBottom: 8,
-      color:'#250994',
-      borderTopColor:'#e80505',
+      color:'#38598b',
+      textAlign: 'center',
       borderWidth:1,
       paddingVertical:6,
-      borderBottomColor:'#e80505',
-      borderRightColor:'transparent',
-      borderLeftColor:'transparent',
+      
+      borderColor:'transparent',
+     
       backgroundColor:'white',
       paddingHorizontal:5,
       shadowColor: '#000',
@@ -323,7 +324,7 @@ export default BlogUI;
       overflow:'hidden',
       backgroundColor:'white',
       borderWidth:1,
-      borderColor:'#e80505',
+      borderColor:'transparent',
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
@@ -345,7 +346,7 @@ export default BlogUI;
       paddingVertical:5,
       borderRadius:20,
       backgroundColor:'white',
-      borderColor:'#250994',
+      borderColor:'#38598b',
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
@@ -355,17 +356,17 @@ export default BlogUI;
     likeDislikeCount: {
       marginLeft: 4,
       fontWeight:'bold',
-      color:'#250994'
+      color:'#38598b'
     },
     commentsContainer: {
-      marginBottom: 10,
+      margin: 'auto',
       minHeight:150
     },
     commentsHeading: {
       fontSize: 18,
       fontWeight: 'bold',
       marginBottom: 8,
-      color:'#1a1370'
+      color:'#38598b'
     },
     commentContainer: {
       flexDirection: 'row',
@@ -382,13 +383,13 @@ export default BlogUI;
       flex: 1,
     },
     commentAuthor: {
-        color:'#250994',
+        color:'#38598b',
         fontSize: 13,
         fontWeight: 'bold',
     },
     commentText: {
       fontSize: 14,
-      color: '#16114f',
+      color: '#38598b',
     },
     commentBox: {
       flexDirection: 'row',
@@ -408,7 +409,7 @@ export default BlogUI;
       minHeight: 40,
       maxHeight:100,
       borderWidth: 1,
-      borderColor: '#250994',
+      borderColor: '#38598b',
       borderRadius: 20,
       padding: 8,
       marginLeft: 8,
@@ -417,6 +418,7 @@ export default BlogUI;
     },
     commentSubmitButton: {
       padding: 8,
+      color:'#38598b',
       textAlign:'center',
       borderRadius: 4,
       position:'absolute',

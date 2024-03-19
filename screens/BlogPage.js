@@ -92,7 +92,7 @@ const BlogPage = ({navigation}) => {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <Text style={styles.title}>Write a Blog</Text>
+      <Text style={styles.title}>What's on your mind?</Text>
       <TextInput value={title} onChangeText={(text)=>setTitle(text)} style={styles.input} placeholder='Title of the blog..'/>
       <View style={styles.editorContainer}>
         <RichToolbar
@@ -111,7 +111,7 @@ const BlogPage = ({navigation}) => {
             value={content}
             ref={editorRef}
             style={[styles.editor]}
-            placeholder='Write your blog here...'
+            placeholder='Write your blog here..'
             onChange={ descriptionText => {
                 setContent(descriptionText);
             }}
