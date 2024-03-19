@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color:'#38598b',
   },
   profileContainer: {
     width: '100%',
@@ -193,14 +194,16 @@ const styles = StyleSheet.create({
   inputBox: {
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'transparent',
     borderRadius: 5,
     padding: 10,
     width: '100%',
+    
   },
   label: {
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#38598b',
   },
   textInput: {
     backgroundColor: '#fff',
@@ -209,13 +212,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     width: '100%',
+    color:'#38598b',
+  
   },
   image: {
-    width: 150,
-    height: 150,
+    width: 250,
+    height: 250,
     borderRadius: 75,
     marginBottom: 20,
   },
 });
 
-export default ProfileScreen
+export default ProfileScreen;
