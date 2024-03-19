@@ -117,7 +117,7 @@ const BlogList = ({navigation}) => {
       
       <Text style={styles.HeaderTitle}>Blogs</Text>
       {
-        loading && <ActivityIndicator size={40} style={{height:350}} color={"#e80505"}/>
+        loading && <ActivityIndicator size={40} style={{height:350}} color={"#e7eaf6"}/>
       }
       {!loading && blogsList.length>0 &&  blogsList.map((item) => (
         <BlogListItem
@@ -131,6 +131,7 @@ const BlogList = ({navigation}) => {
           dislikeCount={item.dislikes.length}
           commentsCount={item.comments.length}
           date={item.date}
+          
         />
       ))}
       {/* {endOfAllBlogs==true?

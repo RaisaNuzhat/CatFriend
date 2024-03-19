@@ -276,10 +276,11 @@ export default BlogUI;
       flexDirection: 'row',
       alignItems: 'center',
       paddingVertical:10,
+      marginTop:40,
     },
     authorImage: {
-      width: 40,
-      height: 40,
+      width: 60,
+      height: 60,
       borderRadius: 20,
       margin: 8,
     },
@@ -297,6 +298,7 @@ export default BlogUI;
     blogContent: {
       marginBottom: 16,
       width:'100%',
+      backgroundColor:'#e7eaf6',
     },
     title: {
       fontSize: 22,
@@ -309,7 +311,7 @@ export default BlogUI;
       
       borderColor:'transparent',
      
-      backgroundColor:'white',
+      backgroundColor:'#e7eaf6',
       paddingHorizontal:5,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
@@ -322,7 +324,7 @@ export default BlogUI;
       minHeight:350,
       borderRadius:5,
       overflow:'hidden',
-      backgroundColor:'white',
+      backgroundColor:'#e7eaf6',
       borderWidth:1,
       borderColor:'transparent',
       shadowColor: '#000',
@@ -345,7 +347,7 @@ export default BlogUI;
       justifyContent:'center',
       paddingVertical:5,
       borderRadius:20,
-      backgroundColor:'white',
+      backgroundColor:'#e7eaf6',
       borderColor:'#38598b',
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
