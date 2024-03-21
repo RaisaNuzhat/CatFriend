@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions, ImageBackground, TouchableOpacity, Button, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
+import MapView, { Marker } from 'react-native-maps';
 import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth, db } from '../firebase';
 import { collection, doc, serverTimestamp, setDoc, getDocs, query, orderBy, limit, aggregate, addDoc, where, updateDoc } from 'firebase/firestore';
 import 'firebase/auth';
+import * as Location from 'expo-location';
 import { getAuth } from 'firebase/auth';
 
 const AboutUs = () => {
@@ -19,6 +21,35 @@ const AboutUs = () => {
   const [userLocation, setUserLocation] = useState(null); 
   const [userAlreadyReviewed, setuserAlreadyReviewed] = useState(false)
   const [userReviewDoc, setuserReviewDoc] = useState('')
+ 
+  useEffect(() => {
+    // Function to start watching for user's location updates
+    const watchUserLocation = async () => {
+      try {
+        // Request permission to access the device's location
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          console.error('Permission to access location was denied');
+          return;
+        }
+
+        // Start watching for location updates
+        Location.watchPositionAsync({ accuracy: Location.Accuracy.High, timeInterval: 5000 }, (location) => {
+          setUserLocation(location.coords);
+        });
+      } catch (error) {
+        console.error('Error watching user location:', error);
+      }
+    };
+
+    // Call the function to start watching for user's location when component mounts
+    watchUserLocation();
+
+    // Clean up watcher when component unmounts
+    return () => {
+      Location.stopLocationUpdatesAsync();
+    };
+  }, []);
 
   useEffect(() => {
     fetchReviews();
@@ -153,35 +184,37 @@ const AboutUs = () => {
 
 
   return (
-    <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
+    <ImageBackground source={require('../assets/backgr.jpeg')} style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={styles.container}>
         {/* <Text style={styles.heading}>About Us</Text> */}
         <Text style={styles.text}>
           Welcome to our app! This app is designed to help users connect and share their experiences.
-          Feel free to explore and interact with other users' content.
+          Feel free to explore different cat breeds and interact with other users' content.
         </Text>
-        <Text style={styles.subHeading}>Location</Text>
-        <View style={styles.mapContainer}>
-          <WebView
-            style={{ height: 200, width: Dimensions.get('window').width - 40 }}
-            source={{
-              html: `
-                <html>
-                  <body style="margin:0;padding:0;">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      frameborder="0"
-                      style="border:0;"
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29201.80007099392!2d91.81651237142986!3d22.325011536848198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acdc45f1a1f02f%3A0x89456c9217a1041c!2sChittagong%2C%20Bangladesh!5e0!3m2!1sen!2sus!4v1644910244394!5m2!1sen!2sus"
-                      allowfullscreen>
-                    </iframe>
-                  </body>
-                </html>
-              `
+         {/* Display Location on Map */}
+         <View style={styles.mapContainer}>
+      <Text style={styles.subHeading}>Location</Text>
+      {userLocation && (
+        <MapView
+          style={styles.map}
+          region={{
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }}
+        >
+          <Marker
+            coordinate={{
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
             }}
+            title="Current Location"
           />
-        </View>
+        </MapView>
+      )}
+    </View>
+            
         <Text style={styles.text}>
           Our head office is located in Chittagong, Bangladesh. It is a vibrant city with rich cultural heritage and scenic beauty.
           Feel free to visit us and learn more about our operations!
@@ -241,13 +274,19 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 20,
+    textAlign:'center',
+    color:'#38598b',
   },
   mapContainer: {
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'transparent',
     borderRadius: 10,
     overflow: 'hidden',
+  },
+  map: {
+    height: 200,
+    borderRadius: 10,
   },
   ratingContainer: {
     flexDirection: 'row',

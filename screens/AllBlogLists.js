@@ -112,7 +112,7 @@ const BlogList = ({navigation}) => {
   }, [isFocused])
 
   return (
-    <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
+    <ImageBackground source={require('../assets/backgr.jpeg')} style={styles.backgroundImage}>
     <ScrollView showsVerticalScrollIndicator={false} style={{paddingTop:10,paddingHorizontal:10, flex: 1,paddingBottom:50}}>
       
       <Text style={styles.HeaderTitle}>Blogs</Text>
@@ -144,8 +144,8 @@ const BlogList = ({navigation}) => {
       <View style={{flex:1,justifyContent:'space-between',height:'auto',alignItems:'center',paddingBottom:50,paddingTop:20,flexDirection:'row'}}>
         <TouchableOpacity disabled={firstBlogReached==true?true:false} style={[styles.buttonContainer,{borderTopRightRadius:0,borderBottomRightRadius:0}]} onPress={FetchPrevTwoBlogs}>
             <AntDesign name="doubleleft" size={18} color="white" />
-            <Text style={styles.buttonText}>&nbsp;Prev</Text>
-          </TouchableOpacity>
+           
+                     </TouchableOpacity>
           <TouchableOpacity disabled={endOfAllBlogs} style={[styles.buttonContainer,{borderTopLeftRadius:0,borderBottomLeftRadius:0}]} onPress={FetchFewBlogs}>
             <Text style={styles.buttonText}>Next&nbsp;</Text>
             <AntDesign name="doubleright" size={18} color="white" />

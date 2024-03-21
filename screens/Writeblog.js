@@ -77,7 +77,7 @@ const Writeblog = ({navigation}) => {
   }
 
   return (
-    <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
+    <ImageBackground source={require('../assets/backgr.jpeg')} style={styles.backgroundImage}>
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.title}>Write a Post</Text>
       <TextInput

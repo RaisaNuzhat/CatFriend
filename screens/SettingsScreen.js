@@ -131,7 +131,7 @@ const [districts, setDistricts] = useState({
   };
 
   return (
-    <ImageBackground source={require('../assets/background.jpeg')} style={styles.backgroundImage}>
+    <ImageBackground source={require('../assets/backgr.jpeg')} style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.container}>
           <Text style={styles.sectionTitle}>Account Settings</Text>
