@@ -10,7 +10,7 @@ import BlogUI from './ABlog';
 import Writeblog from './Writeblog';
 import BlogListItem from '../component/BlogsListItem';
 import BlogList from './AllBlogLists';
-
+import DetectionPage from './DetectionPage';
 const Tab = createBottomTabNavigator();
 
 const NavBar = () => {
@@ -22,13 +22,21 @@ const NavBar = () => {
 
           if (route.name === 'WriteBlog') {
             iconName = focused ? 'newspaper' : 'newspaper-outline';
-          } else if (route.name== 'BlogList') {
+          }
+           else if (route.name== 'BlogList') {
             iconName = focused ? 'list' : 'list-outline';
-          } else if (route.name === 'Profile') {
+          }
+          else if (route.name === 'Detection') {
+            iconName = focused ? 'scan-circle' : 'scan-circle-outline';
+          }
+          
+          else if (route.name === 'Profile') {
             iconName = focused ? 'person-circle' : 'person-circle-outline';
-          } else if (route.name === 'Settings') {
+          } 
+          else if (route.name === 'Settings') {
             iconName = focused ? 'settings' : 'settings-outline';
-          } else if (route.name === 'AboutUs') {
+          }
+           else if (route.name === 'AboutUs') {
             iconName = focused ? 'bulb' : 'bulb-outline';
           }
 
@@ -42,6 +50,7 @@ const NavBar = () => {
     >
       <Tab.Screen name="WriteBlog" component={Writeblog} />
       <Tab.Screen name="BlogList" component={BlogList} />
+      <Tab.Screen name="Detection" component={DetectionPage} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
       <Tab.Screen name="AboutUs" component={AboutUs} />
