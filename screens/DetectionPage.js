@@ -18,17 +18,17 @@ const datasetClasses = [
   "sand-cat",
 ];
 
-const transformImageToTensor = async (uri) => {
+const transformImageToTensor = async (uri) => { // converts an image file (from a URI) into a TensorFlow tensor.
   const img64 = await FileSystem.readAsStringAsync(uri, {
-    encoding: FileSystem.EncodingType.Base64,
+    encoding: FileSystem.EncodingType.Base64,//the image should be read as a base64 encoded string.
   });
   const imgBuffer = tf.util.encodeString(img64, "base64").buffer;
   const raw = new Uint8Array(imgBuffer);
-  let imgTensor = decodeJpeg(raw);
+  let imgTensor = decodeJpeg(raw); //decodes the raw binary data into a TensorFlow tensor
   const scalar = tf.scalar(255);
   imgTensor = tf.image.resizeNearestNeighbor(imgTensor, [224, 224]);
   const tensorScaled = imgTensor.div(scalar);
-  const img = tf.reshape(tensorScaled, [1, 224, 224, 3]);
+  const img = tf.reshape(tensorScaled, [1, 224, 224, 3]); 
   return img;
 };
 
@@ -105,13 +105,13 @@ const pickImage = async () => {
     setLoading(true);
       await tf.ready();
       const model = await tf.loadLayersModel(
-        bundleResourceIO(modelJson, modelWeights)
+        bundleResourceIO(modelJson, modelWeights) //Specifies the model's JSON and weights files, which define the structure and parameters of the pre-trained model.
       );
       setModel(model);
 
       const imageTensor = await transformImageToTensor(result.assets[0].uri);
-      const predictions = model.predict(imageTensor);
-      const highestPredictionIndex = predictions.argMax(1).dataSync();
+      const predictions = model.predict(imageTensor);//returns prediction probabilities for each class
+      const highestPredictionIndex = predictions.argMax(1).dataSync(); //Finds the index of the highest value (most likely class) ,Converts the resulting tensor into a JavaScript array
       const predictedClass = `${datasetClasses[highestPredictionIndex]}`;
       console.log(predictedClass);
       setPrediction(predictedClass);

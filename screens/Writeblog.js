@@ -132,7 +132,8 @@ const styles = StyleSheet.create({
   },
   contentInput: {
     height: 150,
-    textAlignVertical: 'top' // To make content input multiline
+    textAlignVertical: 'top', // To make content input multiline
+    padding:8,
   },
   postButton: {
     backgroundColor: '#38598b',
